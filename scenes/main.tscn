@@ -1,3 +1,32 @@
-[gd_scene format=3 uid="uid://hfotm100vv5"]
+[gd_scene load_steps=7 format=3 uid="uid://hfotm100vv5"]
+
+[ext_resource type="Script" path="res://scenes/main.gd" id="1_2aa1n"]
+[ext_resource type="PackedScene" uid="uid://b8cai0x30yfac" path="res://scenes/players/player.tscn" id="1_kvodp"]
+[ext_resource type="PackedScene" uid="uid://cdytaj5whf841" path="res://scenes/players/hud.tscn" id="2_0pwtm"]
+[ext_resource type="PackedScene" uid="uid://bxjiyuxq0rd0r" path="res://scenes/npc/minion.tscn" id="2_f68a4"]
+[ext_resource type="PackedScene" uid="uid://f213agdjs3x" path="res://scenes/objects/tree.tscn" id="3_ctkh6"]
+[ext_resource type="Texture2D" uid="uid://buey3o63bvn76" path="res://art/New Piskel-1.png (4).png" id="4_pbphf"]
 
 [node name="Main" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_2aa1n")
+
+[node name="Minion" parent="." instance=ExtResource("2_f68a4")]
+position = Vector2(50, 50)
+
+[node name="HUD" parent="." instance=ExtResource("2_0pwtm")]
+
+[node name="Tree" parent="." instance=ExtResource("3_ctkh6")]
+position = Vector2(200, 200)
+
+[node name="Tree2" parent="." instance=ExtResource("3_ctkh6")]
+position = Vector2(450, 600)
+
+[node name="Player" parent="." instance=ExtResource("1_kvodp")]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+scale = Vector2(100, 100)
+texture = ExtResource("4_pbphf")
+
+[connection signal="destroyed" from="Tree" to="." method="_on_tree_destroyed"]
+[connection signal="destroyed" from="Tree2" to="." method="_on_tree_destroyed"]

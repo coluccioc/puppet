@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://f213agdjs3x"]
+
+[ext_resource type="Script" path="res://scenes/objects/tree.gd" id="1_0mqcw"]
+[ext_resource type="Texture2D" uid="uid://7vifoaj2p415" path="res://art/New Piskel-1.png (1).png" id="1_fts33"]
+[ext_resource type="Texture2D" uid="uid://hosgpfoltodq" path="res://art/New Piskel-3.png (1).png" id="2_e6aao"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_a1rpc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_fts33")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_fts33")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_e6aao")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_c8uwp"]
+radius = 22.0
+height = 56.0
+
+[node name="tree" type="StaticBody2D"]
+collision_layer = 2
+collision_mask = 15
+script = ExtResource("1_0mqcw")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_a1rpc")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-2, 53)
+shape = SubResource("CapsuleShape2D_c8uwp")
+
+[connection signal="destroyed" from="." to="." method="_on_destroyed"]

@@ -1,0 +1,83 @@
+[gd_scene load_steps=11 format=3 uid="uid://b8cai0x30yfac"]
+
+[ext_resource type="Script" path="res://scenes/players/player.gd" id="1_n7utm"]
+[ext_resource type="Texture2D" uid="uid://cgw1f26yg4ocw" path="res://art/Stand.png" id="2_ruyg4"]
+[ext_resource type="Texture2D" uid="uid://bk2wd77oesydi" path="res://art/New Piskel-1.png.png" id="3_44ik7"]
+[ext_resource type="Texture2D" uid="uid://de83wqrj23h88" path="res://art/New Piskel-1.png (2).png" id="3_ejk4l"]
+[ext_resource type="Texture2D" uid="uid://cghcu2yijk582" path="res://art/New Piskel-1.png (3).png" id="4_0hmam"]
+[ext_resource type="Texture2D" uid="uid://c5aqwtaksvjeo" path="res://art/New Piskel-2.png.png" id="4_apc0m"]
+[ext_resource type="Texture2D" uid="uid://clpa6oo3tfti1" path="res://art/New Piskel-3.png.png" id="5_djjuw"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_df8dn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_ruyg4")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_ejk4l")
+}],
+"loop": true,
+"name": &"swingH",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_0hmam")
+}],
+"loop": true,
+"name": &"swingV",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_44ik7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_apc0m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_djjuw")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qbtfh"]
+radius = 45.0
+height = 290.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7hya8"]
+size = Vector2(19.5, 27.5)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 16
+collision_mask = 11
+script = ExtResource("1_n7utm")
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="PlayerAnimations" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_df8dn")
+animation = &"idle"
+
+[node name="PlayerCollision" type="CollisionShape2D" parent="."]
+scale = Vector2(0.2, 0.2)
+shape = SubResource("CapsuleShape2D_qbtfh")
+
+[node name="PlayerCam" type="Camera2D" parent="."]
+
+[node name="SwingArea" type="Area2D" parent="."]
+collision_mask = 31
+
+[node name="SwingHitbox" type="CollisionShape2D" parent="SwingArea"]
+shape = SubResource("RectangleShape2D_7hya8")
+
+[connection signal="body_entered" from="SwingArea" to="." method="_on_swing_area_body_entered"]
