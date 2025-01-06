@@ -22,7 +22,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
-	var velocity = Vector2.ZERO
+	velocity = Vector2.ZERO
 	if Input.is_action_pressed("move_up"):
 		velocity.y -= 1
 	if Input.is_action_pressed("move_down"):
@@ -58,8 +58,8 @@ func _process(delta: float) -> void:
 	# Proceed with other actions if not mid-swing
 	else:
 		move_and_slide()
-		position += velocity * delta
-		position = position.clamp(Vector2.ZERO, screen_size)
+		# position += velocity * delta
+		# position = position.clamp(Vector2.ZERO, screen_size)
 		
 		if velocity.x != 0:
 			$PlayerAnimations.animation = "walk"

@@ -15,4 +15,4 @@ func _process(delta: float) -> void:
 
 func _on_tree_destroyed(attacker):
 	if attacker and attacker.has_method("add_wood"):
-		attacker.add_wood(10)  # Give the player 10 wood
+		attacker.add_wood(10)  # Give the player who destroyed tree 10 wood

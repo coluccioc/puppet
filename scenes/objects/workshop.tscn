@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://c12cds84wgbja"]
+
+[ext_resource type="Texture2D" uid="uid://j2uc5m44o8cn" path="res://art/New Piskel-1.png (5).png" id="1_pqup7"]
+[ext_resource type="Script" path="res://scenes/objects/workshop.gd" id="1_ud7wf"]
+[ext_resource type="PackedScene" uid="uid://bxjiyuxq0rd0r" path="res://scenes/npc/minion.tscn" id="2_w0mdy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o21o5"]
+size = Vector2(31, 23)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_kcclg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_pqup7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Workshop" type="StaticBody2D"]
+scale = Vector2(2, 2)
+script = ExtResource("1_ud7wf")
+minion_scene = ExtResource("2_w0mdy")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 4.5)
+shape = SubResource("RectangleShape2D_o21o5")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_kcclg")

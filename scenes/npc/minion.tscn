@@ -17,7 +17,9 @@ animations = [{
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qvkix"]
 
 [node name="Minion" type="CharacterBody2D"]
+collision_mask = 27
 script = ExtResource("1_qbf43")
+speed = 66
 metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
