@@ -22,6 +22,7 @@ animations = [{
 scale = Vector2(2, 2)
 script = ExtResource("1_ud7wf")
 minion_scene = ExtResource("2_w0mdy")
+spawn_interval = 10.0
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

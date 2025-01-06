@@ -1,7 +1,7 @@
 extends StaticBody2D
 
 @export var minion_scene: PackedScene  # Reference to the Minion scene
-@export var spawn_radius: float = 50  # Radius around the workshop to attempt spawning
+@export var spawn_radius: float = 100  # Radius around the workshop to attempt spawning
 @export var spawn_interval: float = 20  # Time in seconds between spawns
 @export var max_attempts: int = 10  # Maximum attempts to find a collision-free spot
 
@@ -12,6 +12,16 @@ func _process(delta: float) -> void:
 	if spawn_timer >= spawn_interval:
 		spawn_minion()
 		spawn_timer = 0
+
+var health = 300
+
+func take_damage(amt: int, attacker) -> void:
+	health -= amt
+	if health <= 0:
+		die()
+		
+func die():
+	queue_free()
 
 func spawn_minion() -> void:
 	# Get the direct space state for collision checks
