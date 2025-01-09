@@ -44,7 +44,7 @@ func _process(delta: float) -> void:
 						routing = true
 			else:
 				# Check to see if we're at a target
-				# If at target
+				# If at target, do harvesting stuff
 				pass
 
 # Find the resource dropoff nearest to the minion's current location, ideally

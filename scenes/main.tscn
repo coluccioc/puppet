@@ -35,7 +35,3 @@ texture = ExtResource("4_pbphf")
 
 [node name="Workshop" parent="." instance=ExtResource("7_i7xrx")]
 position = Vector2(300, 450)
-spawn_interval = 10.0
-
-[connection signal="destroyed" from="Tree" to="." method="_on_tree_destroyed"]
-[connection signal="destroyed" from="Tree2" to="." method="_on_tree_destroyed"]

@@ -13,6 +13,6 @@ func _process(delta: float) -> void:
 	pass
 	
 
-func _on_tree_destroyed(attacker):
+func _on_tree_chopped(attacker):
 	if attacker and attacker.has_method("add_wood"):
 		attacker.add_wood(10)  # Give the player who destroyed tree 10 wood

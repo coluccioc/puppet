@@ -4,8 +4,6 @@ extends StaticBody2D
 var health = size
 var last_attacker = null
 
-signal destroyed(attacker)
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$AnimatedSprite2D.play()
@@ -18,8 +16,9 @@ func _process(delta: float) -> void:
 
 func take_damage(damage : int, attacker: Node):
 	health -= damage
-	last_attacker = attacker
+	var logs = min(damage, damage+health)
+	if(attacker.has_method("add_wood")):
+		attacker.add_wood(logs)
 	if health <= 0:
+		attacker.add_wood(logs)
 		queue_free()
-		emit_signal("destroyed", last_attacker)
-		
