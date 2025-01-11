@@ -1,0 +1,15 @@
+[gd_scene load_steps=5 format=3 uid="uid://dtqgnnmh2d5jr"]
+
+[ext_resource type="Script" path="res://test.gd" id="1_qgxff"]
+[ext_resource type="PackedScene" uid="uid://bxjiyuxq0rd0r" path="res://scenes/npc/minion.tscn" id="2_xwoey"]
+[ext_resource type="PackedScene" uid="uid://f213agdjs3x" path="res://scenes/objects/tree.tscn" id="3_pcqi8"]
+[ext_resource type="PackedScene" uid="uid://b8cai0x30yfac" path="res://scenes/players/player.tscn" id="4_f31i0"]
+
+[node name="Test" type="Node2D"]
+script = ExtResource("1_qgxff")
+
+[node name="Minion" parent="." instance=ExtResource("2_xwoey")]
+
+[node name="Tree" parent="." instance=ExtResource("3_pcqi8")]
+
+[node name="Player" parent="." instance=ExtResource("4_f31i0")]

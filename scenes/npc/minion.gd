@@ -12,10 +12,9 @@ var target
 var routing
 
 var wood = 0
-var encumbered
 var nearby_trees: Array = []
 var nearest_resource
-var chop_timer
+var chop_timer = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -33,7 +32,7 @@ func _process(delta: float) -> void:
 		NPCState.FOLLOW:
 			if master:
 				target = master.position
-				move_to(target)
+				move_to(target, 70)
 			else:
 				pass
 				# print("NO MASTER")
@@ -45,9 +44,9 @@ func _process(delta: float) -> void:
 # Find the resource dropoff nearest to the minion's current location, ideally
 # factoring necessary pathing
 
-func move_to(destination) -> void:
+func move_to(destination, radius) -> void:
 	
-	if position.distance_to(destination) > 70:
+	if position.distance_to(destination) > radius:
 		var direction
 		velocity = Vector2.ZERO
 		direction = (destination - position).normalized()
@@ -56,74 +55,90 @@ func move_to(destination) -> void:
 
 func harvest():
 	if(target):
-		print("Targeting")
 	# If minion has >= max resource (weight?)
 		if routing:
-			move_to(target)
+			# print("routing")
+			move_to(target, 49)
 			if position.distance_to(target) < 50:
+				print("made it")
 				routing = false
 		elif is_encumbered():
+			print("encumbered")
 			nearest_dropoff()
-			if position.distance_to(target) < 50:
-				player.wood += wood
-				wood = 0
-				nearest_tree()
-			routing = true
-		# Is not encumbered		
+			if(target):
+				if position.distance_to(target) < 50:
+					player.wood += wood
+					wood = 0
+					nearest_tree()
+				routing = true
+		# Is not encumbered
 		else:
 			if position.distance_to(target) < 50:
-				if(nearby_trees.is_empty()):
+				if(nearby_trees.size()==0):
 					player.wood += wood
 					wood = 0
 					state = NPCState.IDLE
 					print("Went Idle")
 				else: chop()
-			pass
+			else:
+				nearest_tree()
 	elif wood > 0:
+		print("woodless")
 		nearest_dropoff()
 		routing = true
 	else:
+		print("still routing?? trees??")
 		nearest_tree()
 
 func chop():
 	if chop_timer == 0:
+		print(str(nearest_resource))
 		if nearest_resource:
-			nearest_resource.take_damage(25)
+			print("chopping")
+			nearest_resource.take_damage(25, self)
 			chop_timer = 30
+			print(str(wood))
 		else: nearest_tree()
+	else:
+		chop_timer -= 1
 
 func nearest_dropoff() -> void:
 	target = null
 	
 func nearest_tree():
-	print("Nearest Tree Search")
-	if nearby_trees.is_empty():
-		print("Empty Array")
+	# print("Nearest Tree Search")
+	if nearby_trees.size() == 0:
+		# print(str(nearby_trees.size()))
 		target = null
 		return
 	var nearest = nearby_trees[0]
-	var distance = position.distance_to(nearest)
+	var distance = position.distance_to(nearest.position)
 	for tree in nearby_trees:
-		if position.distance_to(tree) < distance:
+		if position.distance_to(tree.position) < distance:
 			nearest = tree
-			distance = position.distance_to(tree)
+			distance = position.distance_to(tree.position)
 	target = nearest.position
 	nearest_resource = nearest
+	routing = true
 	
-
+func add_wood(amt):
+	wood += amt
+	
 func is_encumbered() -> bool:
 	if wood >= max_resources:
 		return true
 	else: return false
 	
 func _on_body_entered(body: Node) -> void:
-	print("Entered Body")
-	if body.is_in_group("trees"):
+	print(str(body))
+	print(str(body.is_in_group("tree")))
+	if body.is_in_group("tree"):
+		print("Tree Added")
 		nearby_trees.append(body)
 
 func _on_body_exited(body: Node) -> void:
 	print("Exit Body")
-	if body.is_in_group("trees"):
+	if body.is_in_group("tree"):
 		nearby_trees.erase(body)
 
 func take_damage(amt : int, attacker):
