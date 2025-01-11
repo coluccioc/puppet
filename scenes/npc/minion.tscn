@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bxjiyuxq0rd0r"]
+[gd_scene load_steps=6 format=3 uid="uid://bxjiyuxq0rd0r"]
 
 [ext_resource type="Texture2D" uid="uid://bk2wd77oesydi" path="res://art/New Piskel-1.png.png" id="1_0ov6f"]
 [ext_resource type="Script" path="res://scenes/npc/minion.gd" id="1_qbf43"]
@@ -16,6 +16,8 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qvkix"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_kcr82"]
+
 [node name="Minion" type="CharacterBody2D"]
 collision_mask = 27
 script = ExtResource("1_qbf43")
@@ -27,3 +29,12 @@ sprite_frames = SubResource("SpriteFrames_pfpvh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_qvkix")
+
+[node name="Area2D" type="Area2D" parent="."]
+scale = Vector2(100, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_kcr82")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_body_exited"]

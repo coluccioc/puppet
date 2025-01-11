@@ -18,7 +18,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Workshop" type="StaticBody2D"]
+[node name="Workshop" type="StaticBody2D" groups=["dropoff"]]
 scale = Vector2(2, 2)
 script = ExtResource("1_ud7wf")
 minion_scene = ExtResource("2_w0mdy")
