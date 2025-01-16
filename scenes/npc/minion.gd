@@ -8,6 +8,7 @@ var state = NPCState.HARVEST
 @export var max_resources = 50
 var master = null
 var player
+var dropoff
 var target
 var routing
 
@@ -23,6 +24,7 @@ func _ready() -> void:
 	area2d.connect("body_exited", Callable(self, "_on_body_exited"))
 	
 	player = get_tree().get_root().get_node("Main/Player")
+	dropoff = get_tree().get_root().get_node("Main/Workshop")
 	master = player
 
 
@@ -93,7 +95,7 @@ func harvest():
 func chop():
 	if chop_timer == 0:
 		print(str(nearest_resource))
-		if nearest_resource:
+		if nearest_resource and is_instance_valid(nearest_resource):
 			print("chopping")
 			nearest_resource.take_damage(25, self)
 			chop_timer = 30
@@ -103,7 +105,7 @@ func chop():
 		chop_timer -= 1
 
 func nearest_dropoff() -> void:
-	target = null
+	target = dropoff.position
 	
 func nearest_tree():
 	# print("Nearest Tree Search")
