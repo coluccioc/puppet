@@ -5,14 +5,14 @@ var state = NPCState.HARVEST
 
 @export var speed = 100
 @export var health = 50
-@export var max_resources = 50
 var master = null
 var player
 var dropoff
 var target
 var routing
 
-var wood = 0
+var inv
+
 var nearby_trees: Array = []
 var nearest_resource
 var chop_timer = 0
@@ -26,6 +26,9 @@ func _ready() -> void:
 	player = get_tree().get_root().get_node("Main/Player")
 	dropoff = get_tree().get_root().get_node("Main/Workshop")
 	master = player
+	
+	inv = $Inventory
+	inv.max_resources = 50
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -68,29 +71,30 @@ func harvest():
 			print("encumbered")
 			nearest_dropoff()
 			if(target):
-				if position.distance_to(target) < 50:
-					player.wood += wood
-					wood = 0
+				if position.distance_to(target) < 50 and player.inv:
+					player.inv.add_resource("wood", inv.resources["wood"])
+					inv.resources["wood"] = 0
 					nearest_tree()
 				routing = true
 		# Is not encumbered
 		else:
 			if position.distance_to(target) < 50:
 				if(nearby_trees.size()==0):
-					player.wood += wood
-					wood = 0
+					player.inv.add_resource("wood", inv.resources["wood"])
+					inv.resources["wood"] = 0
 					state = NPCState.IDLE
 					print("Went Idle")
 				else: chop()
 			else:
 				nearest_tree()
-	elif wood > 0:
+	elif inv.resources["wood"] > 0:
 		print("woodless")
 		nearest_dropoff()
 		routing = true
 	else:
-		print("still routing?? trees??")
 		nearest_tree()
+		if (!target):
+			state = NPCState.IDLE
 
 func chop():
 	if chop_timer == 0:
@@ -99,7 +103,6 @@ func chop():
 			print("chopping")
 			nearest_resource.take_damage(25, self)
 			chop_timer = 30
-			print(str(wood))
 		else: nearest_tree()
 	else:
 		chop_timer -= 1
@@ -122,21 +125,21 @@ func nearest_tree():
 	target = nearest.position
 	nearest_resource = nearest
 	routing = true
-	
-func add_wood(amt):
-	wood += amt
-	
+
+
 func is_encumbered() -> bool:
-	if wood >= max_resources:
+	if inv.resources["wood"] >= inv.max_resources:
 		return true
 	else: return false
-	
+
+
 func _on_body_entered(body: Node) -> void:
 	print(str(body))
 	print(str(body.is_in_group("tree")))
 	if body.is_in_group("tree"):
 		print("Tree Added")
 		nearby_trees.append(body)
+	#Add more checks here for other nearby lists
 
 func _on_body_exited(body: Node) -> void:
 	print("Exit Body")

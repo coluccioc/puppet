@@ -17,8 +17,9 @@ func _process(delta: float) -> void:
 func take_damage(damage : int, attacker: Node):
 	health -= damage
 	var logs = min(damage, damage+health)
-	if(attacker.has_method("add_wood")):
-		attacker.add_wood(logs)
-	if health <= 0:
-		attacker.add_wood(logs)
+	if(attacker.inv and attacker.inv.has_method("add_resource")):
+		attacker.inv.add_resource("wood", logs)
+	elif attacker.inv:
+		print("no inv")
+	if(health <= 0):
 		queue_free()

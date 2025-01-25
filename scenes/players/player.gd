@@ -1,4 +1,6 @@
 extends CharacterBody2D
+var inv
+var stats
 
 signal hit
 
@@ -6,7 +8,6 @@ signal hit
 @export var health = 100
 
 var screen_size
-var wood = 0
 var swinging = 0
 var facing_direction = Vector2.DOWN
 
@@ -17,6 +18,10 @@ func _ready() -> void:
 	$PlayerAnimations.play()
 	$SwingArea/SwingHitbox.set_deferred("monitoring", false)
 	$SwingArea/SwingHitbox.set_deferred("disabled", true)
+	
+	#reference helper scripts
+	inv = $Inventory
+	stats = $Stats
 	
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -78,9 +83,6 @@ func update_swing_hitbox_position():
 func _on_swing_area_body_entered(body: Node2D) -> void:
 		if body.has_method("take_damage"):
 			body.take_damage(25, self)
-
-func add_wood(amt: int):
-	wood += amt
 
 func take_damage(amt, attacker):
 	if(attacker != self):

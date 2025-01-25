@@ -9,4 +9,4 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if player:
-		$CustomText.text = str(player.wood) + " " + str(player.health)
+		$CustomText.text = str(player.inv.resources["wood"]) + " " + str(player.health)

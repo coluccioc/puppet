@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxjiyuxq0rd0r"]
+[gd_scene load_steps=7 format=3 uid="uid://bxjiyuxq0rd0r"]
 
 [ext_resource type="Texture2D" uid="uid://bk2wd77oesydi" path="res://art/New Piskel-1.png.png" id="1_0ov6f"]
 [ext_resource type="Script" path="res://scenes/npc/minion.gd" id="1_qbf43"]
+[ext_resource type="Script" path="res://scenes/players/inventory.gd" id="3_bw2ey"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pfpvh"]
 animations = [{
@@ -36,6 +37,9 @@ collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_kcr82")
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("3_bw2ey")
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_body_exited"]
