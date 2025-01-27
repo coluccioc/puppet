@@ -54,8 +54,7 @@ animations = [{
 radius = 45.0
 height = 290.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7hya8"]
-size = Vector2(19.5, 27.5)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0wtk5"]
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 16
@@ -79,7 +78,8 @@ shape = SubResource("CapsuleShape2D_qbtfh")
 collision_mask = 31
 
 [node name="SwingHitbox" type="CollisionShape2D" parent="SwingArea"]
-shape = SubResource("RectangleShape2D_7hya8")
+scale = Vector2(1.25, 1.5)
+shape = SubResource("CapsuleShape2D_0wtk5")
 
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("8_5ujl6")

@@ -6,6 +6,7 @@ signal hit
 
 @export var speed = 200
 @export var health = 100
+var start_speed = speed
 
 var screen_size
 
@@ -34,6 +35,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	
 	# subtract one from all active cooldowns
+	if cooldowns["dash"] == 188:
+		speed = start_speed
 	decrement_cds()
 	
 	velocity = Vector2.ZERO
@@ -52,7 +55,7 @@ func _process(delta: float) -> void:
 		facing_direction = velocity.normalized()
 		
 	# See if player is swinging. If so, turn off collision. 1 frame hit
-	if cooldowns["swing"] > 0 and !$SwingArea/SwingHitbox.disabled:
+	if cooldowns["swing"] == 48 and !$SwingArea/SwingHitbox.disabled:
 			$SwingArea/SwingHitbox.set_deferred("monitoring", false)
 			$SwingArea/SwingHitbox.set_deferred("disabled", true)
 	
@@ -77,7 +80,7 @@ func _process(delta: float) -> void:
 	
 	# Check to see if new swing is input
 	if Input.is_action_pressed("action") and cooldowns["swing"] == 0:
-		cooldowns["swing"] = 30
+		cooldowns["swing"] = 50
 		update_swing_hitbox_position()
 		$SwingArea/SwingHitbox.set_deferred("monitoring", true)
 		$SwingArea/SwingHitbox.set_deferred("disabled", false)
@@ -89,11 +92,13 @@ func _process(delta: float) -> void:
 	# Trying temp speed boost first while player still controls movement each frame.
 	# Could also try a TowerFall type dash lockout where player must move in the faced direction
 	elif Input.is_action_pressed("dash") and cooldowns["dash"] == 0:
-		cooldowns["dash"] = 15
+		cooldowns["dash"] = 200
+		speed *= 5
 
 func update_swing_hitbox_position():
 	var offset = facing_direction * 16
 	$SwingArea/SwingHitbox.position = offset
+	$SwingArea/SwingHitbox.rotation = facing_direction.angle()
 
 func _on_swing_area_body_entered(body: Node2D) -> void:
 		if body.has_method("take_damage"):
