@@ -1,10 +1,16 @@
 extends CharacterBody2D
 
-enum NPCState {IDLE, WALKING, HARVEST, FOLLOW}
-var state = NPCState.HARVEST
+enum NPCState {IDLE, WALKING, HARVESTING, FOLLOWING, FIGHTING}
+var state = NPCState.HARVESTING
 
 @export var speed = 100
 @export var health = 50
+@export var team = 1
+
+# team allegience handlers
+var allies: Array = []
+var enemies: Array = []
+
 var master = null
 var player
 var dropoff
@@ -13,7 +19,13 @@ var routing
 
 var inv
 
+var cooldowns = {
+	"refresh" : 0,
+	"dash" : 0
+}
+
 var nearby_trees: Array = []
+var nearby_enemies: Array = []
 var nearest_resource
 var chop_timer = 0
 
@@ -34,17 +46,19 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	match state:
-		NPCState.FOLLOW:
+		NPCState.FOLLOWING:
 			if master:
 				target = master.position
 				move_to(target, 70)
 			else:
 				pass
 				# print("NO MASTER")
-		NPCState.HARVEST:
+		NPCState.HARVESTING:
 			harvest()
 		NPCState.IDLE:
 			pass
+		NPCState.FIGHTING:
+			fight()
 
 # Find the resource dropoff nearest to the minion's current location, ideally
 # factoring necessary pathing
@@ -58,6 +72,13 @@ func move_to(destination, radius) -> void:
 		velocity = direction * speed
 		move_and_slide()
 
+func fight():
+	if nearby_enemies.is_empty():
+		pass
+	else:
+		if cooldowns["refresh"] == 0:
+			target = nearest(nearby_enemies)
+
 func harvest():
 	if(target):
 	# If minion has >= max resource (weight?)
@@ -69,12 +90,12 @@ func harvest():
 				routing = false
 		elif is_encumbered():
 			print("encumbered")
-			nearest_dropoff()
+			target = nearest_dropoff()
 			if(target):
 				if position.distance_to(target) < 50 and player.inv:
 					player.inv.add_resource("wood", inv.resources["wood"])
 					inv.resources["wood"] = 0
-					nearest_tree()
+					target = nearest(nearby_trees)
 				routing = true
 		# Is not encumbered
 		else:
@@ -86,13 +107,13 @@ func harvest():
 					print("Went Idle")
 				else: chop()
 			else:
-				nearest_tree()
+				target = nearest(nearby_trees)
 	elif inv.resources["wood"] > 0:
 		print("woodless")
-		nearest_dropoff()
+		target = nearest_dropoff()
 		routing = true
 	else:
-		nearest_tree()
+		target = nearest(nearby_trees)
 		if (!target):
 			state = NPCState.IDLE
 
@@ -103,28 +124,27 @@ func chop():
 			print("chopping")
 			nearest_resource.take_damage(25, self)
 			chop_timer = 30
-		else: nearest_tree()
+		else: target = nearest(nearby_trees)
 	else:
 		chop_timer -= 1
 
-func nearest_dropoff() -> void:
-	target = dropoff.position
+func nearest_dropoff():
+	return dropoff.position
 	
-func nearest_tree():
+func nearest(nearby : Array):
 	# print("Nearest Tree Search")
-	if nearby_trees.size() == 0:
+	if nearby.size() == 0:
 		# print(str(nearby_trees.size()))
-		target = null
-		return
-	var nearest = nearby_trees[0]
+		return null
+	var nearest = nearby[0]
 	var distance = position.distance_to(nearest.position)
-	for tree in nearby_trees:
-		if position.distance_to(tree.position) < distance:
-			nearest = tree
-			distance = position.distance_to(tree.position)
-	target = nearest.position
+	for node in nearby:
+		if position.distance_to(node.position) < distance:
+			nearest = node
+			distance = position.distance_to(node.position)
 	nearest_resource = nearest
 	routing = true
+	return nearest.position
 
 
 func is_encumbered() -> bool:
@@ -134,11 +154,12 @@ func is_encumbered() -> bool:
 
 
 func _on_body_entered(body: Node) -> void:
-	print(str(body))
-	print(str(body.is_in_group("tree")))
 	if body.is_in_group("tree"):
 		print("Tree Added")
 		nearby_trees.append(body)
+	elif "team" in body:
+		if body.team != team and body.team != 0:
+			nearby_enemies.append(body)
 	#Add more checks here for other nearby lists
 
 func _on_body_exited(body: Node) -> void:
@@ -151,5 +172,23 @@ func take_damage(amt : int, attacker):
 	if health <= 0:
 		die()
 
+func set_team(t: int):
+	team = t
+	if t not in allies:
+		allies.append(t)
+	
+func add_ally_team(t: int):
+	if t not in allies:
+		allies.append(t)
+	
+func add_enemy_team(t: int):
+	if t not in enemies:
+		enemies.append(t)
+	
+func decrement_cds():
+	for i in cooldowns:
+		if cooldowns[i] > 0:
+			cooldowns[i] -=1
+	
 func die():
 	queue_free()
